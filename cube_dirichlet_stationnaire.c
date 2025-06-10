@@ -4,6 +4,11 @@
 #include <limits.h>
 #include <stdlib.h>
 
+// A décommenter pour écrire les points dans un fichier texte.
+// Il faut penser à modifier le nombre d'itérations. 
+
+#define CHEMINS
+
 /*               (2,2,2)
  *      __________
  *     /         /|
@@ -27,7 +32,7 @@ int main() {
   // Paramètres numériques
   double eps = 0.00001;
   int N = 10; // nombre d'échantillons
-  
+
   double sum = 0;
   double sum_2 = 0;
   FILE *fptr = fopen("echantillons_pos_cube.txt","w");  
@@ -38,8 +43,11 @@ int main() {
     double x_cur[3] = {x_obs[0],x_obs[1],x_obs[2]};
     double weight = 0.;
     bool stop = false;
+    
+    #ifdef CHEMINS
     fprintf(fptr,"%lf,%lf,%lf;",x_obs[0],x_obs[1],x_obs[2]);
-  
+    #endif
+
     while(!stop)
     {
       // Echantillonnages servant à calculer la prochaine position
@@ -57,7 +65,7 @@ int main() {
       x_cur[1] = x_cur[1]+radius*sin(theta)*sin(phi);
       x_cur[2] = x_cur[2]+radius*cos(theta);
 
-      // Eventuel arrêt si la paroi est atteinté
+      // Eventuel arrêt si la paroi est atteinte
       if(    x_cur[0]<eps || x_cur[0]>L-eps
           || x_cur[1]<eps || x_cur[1]>L-eps
           || x_cur[2]<eps )
@@ -70,8 +78,10 @@ int main() {
         stop = true;
       }
 
+      #ifdef CHEMINS
       fprintf(fptr,"%lf,%lf,%lf",x_cur[0],x_cur[1],x_cur[2]);
       fprintf(fptr,stop ? "e" : ";");
+      #endif
     }
     sum += weight;
     sum_2 += pow(weight, 2);

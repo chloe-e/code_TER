@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
-
+#define CHEMINS
 /*               (2,2,2)
  *      __________
  *     /         /|
@@ -47,27 +47,27 @@ double wos(double *x_cur, double L,double eps,FILE *fptr){
       	x_cur[1] = x_cur[1]+radius*sin(theta)*sin(phi);
       	x_cur[2] = x_cur[2]+radius*cos(theta);
 	
-	#ifndef CHEMINS
+	#ifdef CHEMINS
 		fprintf(fptr,"%lf,%lf,%lf",x_cur[0],x_cur[1],x_cur[2]);
 	#endif
 
 	//Test position
 	//Eps-shell Dirichlet
 	if(x_cur[2] < eps){
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,"e");
 		#endif
 		return u1(x_cur[0],0);
 	}	
 	//Eps-shell Neumann
 	else if(L-x_cur[2] < eps){
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,";");
 		#endif
 		return fif(x_cur,L,eps,fptr);
 	}
 	else{
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,";");
 		#endif
 		return wos(x_cur,L,eps,fptr);
@@ -101,27 +101,27 @@ double fif(double *x_cur, double L, double eps, FILE* fptr){
     x_cur[1] = x_cur[1]+radius*sin(theta)*sin(phi);
     x_cur[2] = x_cur[2]-radius*cos(theta);
 	
-	#ifndef CHEMINS
+	#ifdef CHEMINS
 		fprintf(fptr,"%lf,%lf,%lf",x_cur[0],x_cur[1],x_cur[2]);
 	#endif
 	
 	//Test position
 	//Eps-shell Dirichlet
 	if(x_cur[2] < eps){
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,"e");
 		#endif
 		return u1(x_cur[0],0);
 	}	
 	//Eps-shell Neumann
 	else if(L-x_cur[2] < eps){
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,";");
 		#endif
 		return fif(x_cur,L,eps,fptr)+weight;
 	}
 	else{
-		#ifndef CHEMINS
+		#ifdef CHEMINS
 			fprintf(fptr,";");
 		#endif
 		return wos(x_cur,L,eps,fptr)+weight;
@@ -133,10 +133,10 @@ int main() {
   double L = 2; //Hauteur du slab
 
   // Observation
-  double x_obs[3] = {1,0.5,1}; // point initial au centre du cube
+  double x_obs[3] = {1,1,1}; // point initial au centre du cube
   // Paramètres numériques
   double eps = 0.00001;
-  int N = 100000; // nombre d'échantillons
+  int N = 3; // nombre d'échantillons
 	     
   double sum = 0;
   double sum_2 = 0;
@@ -146,7 +146,7 @@ int main() {
   // Pour chaque réalisation de Monte-Carlo
   for (int i = 0; i < N; i++) {
 	double weight = 0;
-	#ifndef CHEMINS
+	#ifdef CHEMINS
 		fprintf(fptr,"%lf,%lf,%lf;",x_obs[0],x_obs[1],x_obs[2]);
 	#endif
     	double x_cur[3] = {x_obs[0],x_obs[1],x_obs[2]};
